@@ -1,12 +1,7 @@
 package io.jzheaux.springsecurity.resolutions;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -31,9 +26,8 @@ public class ResolutionController {
 		return this.resolutions.findById(id);
 	}
 
-	@PostMapping("/resolution")
-	public Resolution make(@RequestBody String text) {
-		String owner = "user";
+	@PostMapping(value = "/resolution")
+	public Resolution make(@CurrentUsername String owner,@RequestParam String text) {
 		Resolution resolution = new Resolution(text, owner);
 		return this.resolutions.save(resolution);
 	}
