@@ -1,6 +1,8 @@
 package io.jzheaux.springsecurity.resolutions;
 
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -16,6 +18,9 @@ public class ResolutionController {
 		this.resolutions = resolutions;
 	}
 
+	@CrossOrigin(allowCredentials = "true")//(maxAge = 0) if locally verifying
+	@PreAuthorize("hasAuthority('resolution:read')")
+	@PostFilter("@post.filter(#root)")
 	@GetMapping("/resolutions")
 	public Iterable<Resolution> read() {
 		return this.resolutions.findAll();
@@ -27,6 +32,7 @@ public class ResolutionController {
 	}
 
 	@PostMapping(value = "/resolution")
+
 	public Resolution make(@CurrentUsername String owner,@RequestParam String text) {
 		Resolution resolution = new Resolution(text, owner);
 		return this.resolutions.save(resolution);
